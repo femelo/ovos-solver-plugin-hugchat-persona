@@ -9,7 +9,7 @@ Uses [Hugging Chat](https://huggingface.co/chat/) via [hugchat](https://github.c
 ```python
 from ovos_solver_hugchat_persona import HuggingChatPersonaSolver
 
-bot = OpenAIPersonaSolver(
+bot = HuggingChatPersonaSolver(
     {
         "email": "{your-hf-email}",
         "password": "{your-hf-password}",
@@ -27,7 +27,7 @@ This plugin will work with [ovos-persona-server](https://github.com/OpenVoiceOS/
 
 ## Configuration
 
-This plugin can be configured to use a LocalAI server instead of OpenAI.
+This plugin can be configured as follows
 
 ```json
 {
