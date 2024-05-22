@@ -55,7 +55,7 @@ setup(
     version=get_version(),
     description='A question solver plugin for ovos',
     url='https://github.com/femelo/ovos-solver-plugin-hugchat-persona',
-    author='jarbasai',
+    author='Flávio De Melo',
     author_email='flavio.eler@gmail.com',
     license='Apache 2.0',
     packages=['ovos_solver_hugchat_persona'],
