@@ -32,7 +32,7 @@ This plugin can be configured as follows
 ```json
 {
     "email": <your_hf_email>,
-    "password": <your_hf_email>,
+    "password": <your_hf_password>,
     "initial_prompt": "You are a helpful assistant."
 }
 ```
