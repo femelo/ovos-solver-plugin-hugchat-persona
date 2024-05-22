@@ -27,6 +27,7 @@ class HuggingChatCompletionsSolver(QuestionSolver):
         if not self.password:
             LOG.error("'password' not set in config")
             raise ValueError("password must be set")
+        self.web_search = self.config.get("web_search", False)
         self.cookies = self._authenticate()
         # Create your ChatBot
         self.chatbot = hugchat.ChatBot(cookies=self.cookies.get_dict())
@@ -69,13 +70,14 @@ class HuggingChatCompletionsSolver(QuestionSolver):
     # Hugging Chat integration
     def _do_api_request(self, prompt: str) -> str:
         """Send query to ChatBot"""
-        response = self.chatbot.chat(prompt)
+        response = self.chatbot.chat(prompt, web_search=self.web_search)
         return response["text"]
 
     def _do_streaming_api_request(self, prompt: str) -> Generator[str]:
         """Send query to ChatBot"""
         for chunk in self.chatbot.query(
             prompt,
+            web_search=self.web_search,
             stream=True
         ):
             if chunk:
