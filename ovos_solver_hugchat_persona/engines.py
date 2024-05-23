@@ -56,7 +56,7 @@ class HuggingChatCompletionsSolver(QuestionSolver):
             except Exception as e:
                 LOG.debug(f"unable to selected {model_id}-{self.available_models[model_id]}: {e}")
                 if not models_ids:
-                    LOG.error(f"unable to selected {model_id}-{self.available_models[model_id]}: {e}")
+                    LOG.error("unable to selected any model!")
                     raise RuntimeError("unable to select any model!")
             # Try next
             model_id = models_ids.pop(0)
