@@ -41,13 +41,26 @@ class HuggingChatCompletionsSolver(QuestionSolver):
     def _select_model(self):
         """Select Hugging Chat model to be used."""
         model_id = 0
+        models_ids = list(range(len(self.available_models)))
         for i, model_name in enumerate(self.available_models):
             if self.engine in model_name:
                 model_id = i
+                del models_ids[i]
                 break
-        LOG.info(f"available models: {self.available_models}")
-        LOG.info(f"selected model: {model_id} - {self.available_models[model_id]}")
-        self.chatbot.switch_llm(model_id)
+        LOG.debug(f"available models: {self.available_models}")
+        while models_ids:  # while there are models left to try
+            try:
+                self.chatbot.switch_llm(model_id)
+                LOG.debug(f"selected model {model_id}-{self.available_models[model_id]}")
+                break
+            except Exception as e:
+                LOG.debug(f"unable to selected {model_id}-{self.available_models[model_id]}: {e}")
+                if not models_ids:
+                    LOG.error(f"unable to selected {model_id}-{self.available_models[model_id]}: {e}")
+                    raise RuntimeError("unable to select any model!")
+            # Try next
+            model_id = models_ids.pop(0)
+
 
     def _authenticate(self) -> requests.sessions.RequestsCookieJar:
         """Authenticate user for a Hugging Chat session and retrieve cookie jar."""
