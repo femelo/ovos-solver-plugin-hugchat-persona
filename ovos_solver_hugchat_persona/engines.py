@@ -45,6 +45,8 @@ class HuggingChatCompletionsSolver(QuestionSolver):
             if self.engine in model_name:
                 model_id = i
                 break
+        LOG.info(f"available models: {self.available_models}")
+        LOG.info(f"selected model: {model_id} - {self.available_models[model_id]}")
         self.chatbot.switch_llm(model_id)
 
     def _authenticate(self) -> requests.sessions.RequestsCookieJar:
