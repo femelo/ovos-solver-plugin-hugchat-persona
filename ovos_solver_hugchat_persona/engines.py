@@ -73,7 +73,7 @@ class HuggingChatCompletionsSolver(QuestionSolver):
         response = self.chatbot.chat(prompt, web_search=self.web_search)
         return response["text"]
 
-    def _do_streaming_api_request(self, prompt: str) -> Generator[str]:
+    def _do_streaming_api_request(self, prompt: str) -> Generator[str, None, None]:
         """Send query to ChatBot"""
         for chunk in self.chatbot.query(
             prompt,
@@ -91,7 +91,7 @@ class HuggingChatCompletionsSolver(QuestionSolver):
         return answer
 
     # officially exported Solver methods
-    def stream_utterances(self, query) -> Generator[str]:
+    def stream_utterances(self, query) -> Generator[str, None, None]:
         answer = ""
         for chunk in self._do_streaming_api_request(query):
             answer += chunk
