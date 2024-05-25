@@ -3,6 +3,7 @@ import json
 from typing import Optional, Dict, Generator, Any
 
 import requests
+import re
 from hugchat import hugchat
 from hugchat.login import Login
 
@@ -11,6 +12,7 @@ from ovos_utils.log import LOG
 
 
 COOKIE_PATH_TEMPLATE = "~/.ovos/cookies/{email}.json"
+NON_TEXT_CHARS = re.compile(r'[^\w\s\d\.\,\?\!\:\;\-\&\'\"]')
 
 
 class HuggingChatCompletionsSolver(QuestionSolver):
@@ -96,7 +98,7 @@ class HuggingChatCompletionsSolver(QuestionSolver):
             stream=True
         ):
             if chunk:
-                yield chunk["token"]
+                yield NON_TEXT_CHARS.sub('', chunk["token"])
 
     def get_spoken_answer(self, query: str, **kwargs):
         response = self._do_api_request(query)
@@ -108,12 +110,22 @@ class HuggingChatCompletionsSolver(QuestionSolver):
     # officially exported Solver methods
     def stream_utterances(self, query) -> Generator[str, None, None]:
         answer = ""
+        ending_chars = [".", "!", "?", ":"]
         for chunk in self._do_streaming_api_request(query):
-            answer += chunk
-            if any(chunk.endswith(p) for p in [".", "!", "?", "\n", ":"]):
+            end_detection = [p in chunk for p in ending_chars]
+            if any(end_detection):
+                ending_char = ending_chars[end_detection.index(True)]
+                elements = chunk.split(ending_char)
+                next_chunk = elements.pop(-1)
+                ending_chunk = ending_char.join(elements + [''])
+                answer += ending_chunk
+                answer = ' '.join(answer.split())
+                LOG.debug(f"hugchat phrase: {answer}")
                 if answer.strip():
                     yield answer
-                answer = ""
+                answer = next_chunk
+            else:
+                answer += chunk
 
 
 # Base models
