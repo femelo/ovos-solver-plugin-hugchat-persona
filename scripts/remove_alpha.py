@@ -2,7 +2,7 @@ import fileinput
 from os.path import join, dirname
 
 
-version_file = join(dirname(dirname(__file__)), "ovos_solver_openai_persona", "version.py")
+version_file = join(dirname(dirname(__file__)), "ovos_solver_hugchat_persona", "version.py")
 
 alpha_var_name = "VERSION_ALPHA"
 
