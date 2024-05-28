@@ -33,11 +33,17 @@ class HuggingChatCompletionsSolver(QuestionSolver):
         self.cookies = self._authenticate()
         # Create your ChatBot
         self.chatbot = hugchat.ChatBot(cookies=self.cookies.get_dict())
-        self.available_models = list(
-            map(lambda m: m.__str__().lower(), self.chatbot.get_available_llm_models())
-        )
-        self.engine = self.config.get("model", self.available_models[0])
-        self._select_model()
+        try:
+            self.available_models = list(
+                map(lambda m: m.__str__().lower(), self.chatbot.get_available_llm_models())
+            )
+            self.engine = self.config.get("model", self.available_models[0])
+            self._select_model()
+        except Exception as e:
+            self.available_models = []
+            self.engine = "undefined"
+            LOG.warning(f"unable to select model: {e}")
+            LOG.warning(f"trying to use whichever model was selected previously")
         self.initial_prompt = config.get("initial_prompt", "You are a helpful assistant.")
 
     def _select_model(self):
