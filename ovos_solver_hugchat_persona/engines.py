@@ -98,7 +98,7 @@ class HuggingChatCompletionsSolver(QuestionSolver):
 
     def _do_streaming_api_request(self, prompt: str) -> Generator[str, None, None]:
         """Send query to ChatBot"""
-        for chunk in self.chatbot.query(
+        for chunk in self.chatbot.chat(
             prompt,
             web_search=self.web_search,
             stream=True
