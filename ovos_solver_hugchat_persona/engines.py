@@ -33,6 +33,7 @@ class HuggingChatCompletionsSolver(QuestionSolver):
         self.cookies = self._authenticate()
         # Create your ChatBot
         self.chatbot = hugchat.ChatBot(cookies=self.cookies.get_dict())
+        LOG.info("HuggingChat chatbot loaded successfully.")
         try:
             self.available_models = list(
                 map(lambda m: m.__str__().lower(), self.chatbot.get_available_llm_models())
@@ -55,14 +56,14 @@ class HuggingChatCompletionsSolver(QuestionSolver):
                 model_id = i
                 del models_ids[i]
                 break
-        LOG.debug(f"available models: {self.available_models}")
+        LOG.info(f"available models: {self.available_models}")
         while models_ids:  # while there are models left to try
             try:
                 self.chatbot.switch_llm(model_id)
-                LOG.debug(f"selected model {model_id}-{self.available_models[model_id]}")
+                LOG.info(f"selected model {model_id}-{self.available_models[model_id]}")
                 break
             except Exception as e:
-                LOG.debug(f"unable to selected {model_id}-{self.available_models[model_id]}: {e}")
+                LOG.info(f"unable to selected {model_id}-{self.available_models[model_id]}: {e}")
                 if not models_ids:
                     LOG.error("unable to selected any model!")
                     raise RuntimeError("unable to select any model!")
